@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->enum('sex',['male','female']);
-            $table->string('tel');
+            $table->string('tel')->unique();
             $table->timestamps();
         });
     }
