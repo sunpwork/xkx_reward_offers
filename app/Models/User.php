@@ -18,4 +18,14 @@ class User extends Authenticatable
     protected $fillable = [
         'name', 'male', 'tel',
     ];
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 }

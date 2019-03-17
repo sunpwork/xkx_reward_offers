@@ -17,9 +17,16 @@ $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', [
     'namespace' => 'App\Http\Controllers\Api'
 ], function (\Dingo\Api\Routing\Router $api) {
-    // 获取验证码
+    // 获取图片验证码
     $api->post('captchas','CaptchasController@store')
         ->name('api.captchas.store');
+    // 短信验证码
     $api->post('verificationCodes', 'VerificationCodesController@store')
         ->name('api.verificationCodes.store');
+    // 用户注册
+    $api->post('users','UserController@store')
+        ->name('api.users.store');
+    // 登录
+    $api->post('weapp/authorizations','AuthorizationsController@weappStore')
+        ->name('api.weapp.authorizations.store');
 });
