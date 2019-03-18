@@ -26,7 +26,8 @@ $api->version('v1', [
     // 用户注册
     $api->post('users','UserController@store')
         ->name('api.users.store');
-    // 登录
+    // 小程序登录
     $api->post('weapp/authorizations','AuthorizationsController@weappStore')
         ->name('api.weapp.authorizations.store');
+
 });

@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class AuthorizationController extends Controller
+class AuthorizationsController extends Controller
 {
     public function weappStore(WeappAuthorizationRequest $request)
     {
@@ -22,7 +22,15 @@ class AuthorizationController extends Controller
         $user = User::where('weapp_openid', $data['openid'])->first();
 
         if (!$user) {
-            return $this->response->errorForbidden('用户不存在');
+            if (!$request->name) {
+                return $this->response->errorForbidden('用户不存在');
+            }
+            $user = User::create([
+                'name' => $request->name,
+                'avatar' => $request->avatar,
+                'gender' => $request->gender,
+                'weapp_openid' => $data['openid'],
+            ]);
         }
 
         $user->weixin_session_key = $data['session_key'];
