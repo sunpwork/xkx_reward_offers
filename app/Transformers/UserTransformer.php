@@ -12,8 +12,9 @@ class UserTransformer extends TransformerAbstract
         return [
             'id' => $user->id,
             'name' => $user->name,
-            'avatar' => $user->avatar,
-            'tel' => $user->tel,
+            'gender' => $user->gender,
+            'avatar' => url($user->avatar),
+            'phone' => $user->phone,
             'created_at' => $user->created_at->toDateTimeString(),
             'updated_at' => $user->updated_at->toDateTimeString(),
         ];
