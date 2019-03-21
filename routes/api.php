@@ -40,5 +40,8 @@ $api->version('v1', [
         // 获取当前登录用户的信息
         $api->get('user', 'UsersController@me')
             ->name('api.user.show');
+        // 小程序绑定手机号
+        $api->put('weapp/users/bindPhoneNumber','UsersController@weappBindPhoneNumber')
+            ->name('api.weapp.users.bindPhoneNumber');
     });
 });
