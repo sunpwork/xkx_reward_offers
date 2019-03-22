@@ -11,23 +11,14 @@ class VerificationCodesController extends Controller
 {
     public function store(VerificationCodeRequest $request, EasySms $easySms)
     {
-        $captchaData = \Cache::get($request->captcha_key);
-        if (!$captchaData) {
-            return $this->response->error('图片验证码已失效', 422);
-        }
-        if (!hash_equals($captchaData['code'], $request->captcha_code)) {
-            \Cache::forget($request->captcha_key);
-            return $this->response->errorUnauthorized('验证码错误');
-        }
-
-        $tel = $captchaData['tel'];
+        $phone = $request->phone;
 
 //        if (!app()->environment('production')) {
 //            $code = '123456';
 //        } else {
             $code = (string)random_int(100000, 999999);
             try {
-                $easySms->send($tel, [
+                $easySms->send($phone, [
                     'template' => env('QCLOUD_SMS_TEMPLATE_ID'),
                     'data' => [$code]
                 ]);
@@ -39,7 +30,7 @@ class VerificationCodesController extends Controller
 
         $key = 'verificationCode_' . str_random(15);
         $expiredAt = now()->addMinutes(10);
-        \Cache::put($key, ['tel' => $tel, 'code' => $code], $expiredAt);
+        \Cache::put($key, ['phone' => $phone, 'code' => $code], $expiredAt);
 
         return $this->response->array([
             'key' => $key,

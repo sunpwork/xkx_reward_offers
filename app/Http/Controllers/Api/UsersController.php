@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Handlers\ImageUploadHandler;
 use App\Http\Requests\Api\UserRequest;
 use App\Models\User;
 use App\Transformers\UserTransformer;
@@ -26,6 +27,33 @@ class UsersController extends Controller
         $decryptedData = $miniProgram->encryptor->decryptData($user->weixin_session_key, $request->iv, $request->encryptedData);
         $user->phone = $decryptedData['phoneNumber'];
         $user->save();
+        return $this->response->item($user, new UserTransformer());
+    }
+
+    public function update(UserRequest $request,ImageUploadHandler $uploadHandler)
+    {
+        $user = $this->user();
+
+        $attributes = $request->only(['name', 'gender', 'avatar']);
+        if ($request->verification_key && $request->verification_code) {
+            $verifyData = \Cache::get($request->verification_key);
+
+            if (!$verifyData) {
+                return $this->response->error('验证码已失效', 422);
+            }
+
+            if (!hash_equals($verifyData['code'], $request->verification_code)) {
+                return $this->response->errorUnauthorized('验证码错误');
+            }
+            $attributes['phone'] = $verifyData['phone'];
+        }
+        if ($request->avatar) {
+            $result = $uploadHandler->save($request->avatar, 'avatars', $user->id, 362);
+            if ($result) {
+                $attributes['avatar'] = $result['path'];
+            }
+        }
+        $user->update($attributes);
         return $this->response->item($user, new UserTransformer());
     }
 }

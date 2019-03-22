@@ -30,7 +30,7 @@ $api->version('v1', [
     $api->post('weapp/authorizations', 'AuthorizationsController@weappStore')
         ->name('api.weapp.authorizations.store');
     // 刷新token
-    $api->put('authorization/current','AuthorizationController@update')
+    $api->put('authorizations/current', 'AuthorizationsController@update')
         ->name('api.authorizations.update');
 
     // 需要token验证的接口
@@ -41,7 +41,13 @@ $api->version('v1', [
         $api->get('user', 'UsersController@me')
             ->name('api.user.show');
         // 小程序绑定手机号
-        $api->put('weapp/users/bindPhoneNumber','UsersController@weappBindPhoneNumber')
+        $api->put('weapp/user/bindPhoneNumber', 'UsersController@weappBindPhoneNumber')
             ->name('api.weapp.users.bindPhoneNumber');
+        // 修改用户信息
+        $api->put('user', 'UsersController@update')
+            ->name('api.user.update');
+        // 短信验证码
+        $api->post('verificationCodes', 'VerificationCodesController@store')
+            ->name('api.verificationCodes.store');
     });
 });
