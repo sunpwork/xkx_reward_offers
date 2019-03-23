@@ -49,5 +49,8 @@ $api->version('v1', [
         // 短信验证码
         $api->post('verificationCodes', 'VerificationCodesController@store')
             ->name('api.verificationCodes.store');
+        // 图片资源
+        $api->post('images', 'ImagesController@store')
+            ->name('api.images.store');
     });
 });

@@ -2,18 +2,15 @@
 
 namespace App\Handlers;
 
+use Illuminate\Support\Facades\Storage;
 use Image;
 
 class ImageUploadHandler
 {
     protected $allowed_ext = ['png', 'jpg', 'gif', 'jpeg'];
 
-    public function save($file, $folder, $file_prefix, $max_width = false)
+    public function save($file, $folder, $max_width = false)
     {
-        $folder_name = "uploads/images/$folder/" . date("Ym/d", time());
-
-        $upload_path = public_path() . "/$folder_name";
-
         //获取文件后缀(粘贴图片无后缀，默认为png)
         $extension = strtolower($file->getClientOriginalExtension()) ?: 'png';
 
@@ -21,16 +18,19 @@ class ImageUploadHandler
             return false;
         }
 
-        $filename = $file_prefix . '-' . time() . '-' . str_random(10) . '.' . $extension;
+        $folder_name = "uploads/images/$folder/" . date("Ym/d", time());
 
-        $file->move($upload_path, $filename);
+//        $file->move($upload_path, $filename);
+//
+//        if ($max_width && $extension != 'gif') {
+//            $this->reduceSize("$upload_path/$filename", $max_width);
+//        }
 
-        if ($max_width && $extension != 'gif') {
-            $this->reduceSize("$upload_path/$filename", $max_width);
-        }
+        $disk = Storage::disk('qiniu');
+        $filepath = $disk->put($folder_name, $file);
 
         return [
-            'path' => "/$folder_name/$filename",
+            'path' => $disk->getUrl($filepath),
         ];
     }
 
