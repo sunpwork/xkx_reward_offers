@@ -14,12 +14,16 @@ class ImagesController extends Controller
     public function store(ImageRequest $request, ImageUploadHandler $uploadHandler, Image $image)
     {
         $user = $this->user();
-        $result = $uploadHandler->save($request->image,$request->type);
-        $image->path = $result['path'];
-        $image->type = $request->type;
-        $image->user_id = $user->id;
-        $image->save();
+        $result = $uploadHandler->save($request->image, $request->type);
+        if ($result) {
+            $image->path = $result['path'];
+            $image->type = $request->type;
+            $image->user_id = $user->id;
+            $image->save();
 
-        return $this->response->item($image, new ImageTransformer())->setStatusCode(201);
+            return $this->response->item($image, new ImageTransformer())->setStatusCode(201);
+        } else {
+            return $this->response->errorInternal('图片上传失败');
+        }
     }
 }

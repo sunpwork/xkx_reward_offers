@@ -15,7 +15,8 @@ use Illuminate\Http\Request;
 $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', [
-    'namespace' => 'App\Http\Controllers\Api'
+    'namespace' => 'App\Http\Controllers\Api',
+    'middleware' => ['bindings'],
 ], function (\Dingo\Api\Routing\Router $api) {
     // 获取图片验证码
     $api->post('captchas', 'CaptchasController@store')
@@ -23,6 +24,10 @@ $api->version('v1', [
     // 短信验证码
     $api->post('verificationCodes', 'VerificationCodesController@store')
         ->name('api.verificationCodes.store');
+    // 校验短信验证码
+    $api->put('verificationCodes/check', 'VerificationCodesController@check')
+        ->name('api.verificationCodes.check');
+
     // 用户注册
     $api->post('users', 'UserController@store')
         ->name('api.users.store');
@@ -32,6 +37,16 @@ $api->version('v1', [
     // 刷新token
     $api->put('authorizations/current', 'AuthorizationsController@update')
         ->name('api.authorizations.update');
+
+    // 兼职列表
+    $api->get('positions', 'PositionsController@index')
+        ->name('api.positions.index');
+    // 兼职详情
+    $api->get('positions/{position}', 'PositionsController@show')
+        ->name('api.positions.show');
+    // 所有分类
+    $api->get('categories', 'CategoriesController@index')
+        ->name('api.categories.index');
 
     // 需要token验证的接口
     $api->group([
@@ -52,5 +67,15 @@ $api->version('v1', [
         // 图片资源
         $api->post('images', 'ImagesController@store')
             ->name('api.images.store');
+
+        // 提交报名申请
+        $api->post('positions/{position}/apply_records', 'ApplyRecordsController@store')
+            ->name('api.positions.reply_records.store');
+        // 获取报名申请信息
+        $api->get('user/positions/{position}/apply_record', 'ApplyRecordsController@myApply')
+            ->name('api.user.positions.reply_record');
+        // 获取报名申请信息
+        $api->get('user/positions', 'PositionsController@myApplyIndex')
+            ->name('api.user.positions');
     });
 });

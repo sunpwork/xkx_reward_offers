@@ -27,7 +27,12 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'gender', 'phone','avatar',
-        'weapp_openid','weixin_session_key'
+        'name', 'gender', 'phone', 'avatar',
+        'weapp_openid', 'weixin_session_key'
     ];
+
+    public function applyRecords()
+    {
+        return $this->hasMany(ApplyRecord::class, 'user_id', $this->primaryKey);
+    }
 }

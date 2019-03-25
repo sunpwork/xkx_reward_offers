@@ -29,9 +29,13 @@ class ImageUploadHandler
         $disk = Storage::disk('qiniu');
         $filepath = $disk->put($folder_name, $file);
 
-        return [
-            'path' => $disk->getUrl($filepath),
-        ];
+        if ($filepath) {
+            return [
+                'path' => $disk->getUrl($filepath),
+            ];
+        } else {
+            return false;
+        }
     }
 
     public function reduceSize($file_path, $max_width)
