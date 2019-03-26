@@ -109,7 +109,6 @@ class PositionsController extends Controller
     {
         $show = new Show(Position::findOrFail($id));
 
-        $show->id('Id');
         $show->category_id('Category id');
         $show->title('Title');
         $show->covers('Covers');
