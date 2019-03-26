@@ -144,7 +144,7 @@ class PositionsController extends Controller
             ->required();
         $form->textarea('detail_info', '详细内容')->required();
         $form->text('contact_man', '联系人')->required();
-        $form->text('contact_phone', '联系电话')->required();
+        $form->mobile('contact_phone', '联系电话')->required();
         $form->number('quantity', '招聘人数')->default(0)->required();
         $form->text('salary', '薪资')->required();
         $form->text('work_address', '工作地点')->required();
