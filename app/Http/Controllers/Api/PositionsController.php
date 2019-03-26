@@ -12,6 +12,8 @@ class PositionsController extends Controller
     {
         $query = $position->query();
 
+        $query->recent();
+        $query->where('display', 1);
         if ($categoryId = $request->category_id) {
             $query->where('category_id', $categoryId);
         }

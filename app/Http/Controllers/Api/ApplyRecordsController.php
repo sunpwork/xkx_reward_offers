@@ -15,7 +15,9 @@ class ApplyRecordsController extends Controller
     {
         if ($this->getApplyRecord($this->user(), $position)) {
             return $this->response->errorForbidden('重复提交');
-        } else {
+        } else if (!$position->display){
+            return $this->response->errorForbidden('报名已关闭');
+        }else{
             $applyRecord->fill($request->all());
             $applyRecord->user_id = $this->user()->id;
             $applyRecord->position_id = $position->id;

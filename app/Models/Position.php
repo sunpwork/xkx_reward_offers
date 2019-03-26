@@ -24,4 +24,9 @@ class Position extends Model
     {
         $this->attributes['covers'] = Storage::disk('qiniu')->getUrl($value);
     }
+
+    public function scopeRecent($query)
+    {
+        return $query->orderBy('created_at', 'desc');
+    }
 }

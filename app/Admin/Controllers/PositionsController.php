@@ -83,19 +83,18 @@ class PositionsController extends Controller
     {
         $grid = new Grid(new Position);
 
-        $grid->id('Id');
-        $grid->category_id('Category id');
-        $grid->title('Title');
-        $grid->covers('Covers');
-        $grid->detail_info('Detail info');
-        $grid->contact_man('Contact man');
-        $grid->contact_phone('Contact phone');
-        $grid->quantity('Quantity');
-        $grid->apply_quantity('Apply quantity');
-        $grid->salary('Salary');
-        $grid->work_address('Work address');
-        $grid->created_at('Created at');
-        $grid->updated_at('Updated at');
+        $grid->model()->with(['category']);
+
+        $grid->column('category.name', '分类');
+        $grid->title('标题');
+        $grid->contact_man('联系人');
+        $grid->contact_phone('联系电话');
+        $grid->quantity('招聘人数');
+        $grid->apply_quantity('报名数量');
+        $grid->salary('薪资');
+        $grid->work_address('工作地点');
+        $grid->created_at('创建时间');
+        $grid->display('显示')->switch();
 
         return $grid;
     }
@@ -148,6 +147,7 @@ class PositionsController extends Controller
         $form->number('quantity', '招聘人数')->default(0)->required();
         $form->text('salary', '薪资')->required();
         $form->text('work_address', '工作地点')->required();
+        $form->switch('display', '显示')->default(true);
 
         return $form;
     }

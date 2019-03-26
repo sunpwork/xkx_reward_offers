@@ -23,6 +23,7 @@ class PositionTransformer extends TransformerAbstract
             'apply_quantity' => (int)$position->apply_quantity,
             'salary' => $position->salary,
             'work_address' => $position->work_address,
+            'display' => (boolean)$position->display,
             'created_at' => $position->created_at->toDateTimeString(),
             'updated_at' => $position->updated_at->toDateTimeString(),
         ];
