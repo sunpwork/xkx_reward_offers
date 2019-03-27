@@ -13,9 +13,9 @@ class VerificationCodesController extends Controller
     {
         $phone = $request->phone;
 
-//        if (!app()->environment('production')) {
-//            $code = '123456';
-//        } else {
+        if (!app()->environment('production')) {
+            $code = '123456';
+        } else {
         $code = (string)random_int(100000, 999999);
         try {
             $easySms->send($phone, [
@@ -26,7 +26,7 @@ class VerificationCodesController extends Controller
             $message = $exception->getException('qcloud')->getMessage();
             return $this->response->errorInternal($message ?: '短信发送异常');
         }
-//        }
+        }
 
         $key = 'verificationCode_' . str_random(15);
         $expiredAt = now()->addMinutes(10);
