@@ -109,18 +109,16 @@ class PositionsController extends Controller
     {
         $show = new Show(Position::findOrFail($id));
 
-        $show->category_id('Category id');
-        $show->title('Title');
-        $show->covers('Covers');
-        $show->detail_info('Detail info');
-        $show->contact_man('Contact man');
-        $show->contact_phone('Contact phone');
-        $show->quantity('Quantity');
-        $show->apply_quantity('Apply quantity');
-        $show->salary('Salary');
-        $show->work_address('Work address');
-        $show->created_at('Created at');
-        $show->updated_at('Updated at');
+        $show->title('标题');
+        $show->covers('封面图片')->image();
+        $show->detail_info('详细信息');
+        $show->contact_man('联系人');
+        $show->contact_phone('联系人电话');
+        $show->quantity('招聘数量');
+        $show->apply_quantity('申请人数');
+        $show->salary('薪资');
+        $show->work_address('工作地点');
+        $show->created_at('创建时间');
 
         return $show;
     }

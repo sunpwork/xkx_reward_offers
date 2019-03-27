@@ -12,6 +12,7 @@ Route::group([
 
     $router->get('/', 'HomeController@index');
     $router->resource('positions', 'PositionsController');
+    $router->resource('apply_records', 'ApplyRecordsController');
     $router->resource('categories', 'CategoriesController');
 
 });
