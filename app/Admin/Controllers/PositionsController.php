@@ -10,6 +10,7 @@ use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
+use Encore\Admin\Widgets\Table;
 use Illuminate\Support\Facades\Storage;
 
 class PositionsController extends Controller
@@ -90,11 +91,21 @@ class PositionsController extends Controller
         $grid->contact_man('联系人');
         $grid->contact_phone('联系电话');
         $grid->quantity('招聘人数');
-        $grid->apply_quantity('报名数量');
+        $grid->apply_quantity('报名人数')->expand(function ($model) {
+            $applyRecords = $model->applyRecords->map(function ($applyRecord) {
+                return $applyRecord->only(['name', 'phone', 'created_at']);
+            });
+            return new Table(['姓名', '联系电话', '申请时间'], $applyRecords->toArray());
+        });
         $grid->salary('薪资');
         $grid->work_address('工作地点');
-        $grid->created_at('创建时间');
+        $grid->created_at('创建时间')->sortable();
         $grid->display('显示')->switch();
+
+        $grid->filter(function (Grid\Filter $filter) {
+            $filter->disableIdFilter();
+            $filter->equal('id', '标题')->select(Position::all()->pluck('title', 'id'));
+        });
 
         return $grid;
     }
@@ -119,6 +130,16 @@ class PositionsController extends Controller
         $show->salary('薪资');
         $show->work_address('工作地点');
         $show->created_at('创建时间');
+        $show->updated_at('修改时间');
+
+        $show->applyRecords('申请记录', function (Grid $applyRecords) {
+            $applyRecords->setResource('/admin/apply_records');
+            $applyRecords->column('user.name', '用户');
+            $applyRecords->name('姓名');
+            $applyRecords->phone('联系电话');
+            $applyRecords->gender('性别')->using(['male' => '男', 'female' => '女']);
+            $applyRecords->created_at('申请时间');
+        });
 
         return $show;
     }
@@ -136,8 +157,7 @@ class PositionsController extends Controller
         $form->text('title', '标题');
         $form->image('covers', '封面')
             ->rules('mimes:jpeg,bmp,png,gif|dimensions:min_width=200,min_height=200')
-            ->uniqueName()
-            ->required();
+            ->uniqueName();
         $form->textarea('detail_info', '详细内容')->required();
         $form->text('contact_man', '联系人')->required();
         $form->mobile('contact_phone', '联系电话')->required();

@@ -7,7 +7,7 @@
     "require": {
         "php": ">=7.0.0",
         "dingo/api": "^2.0.0-alpha2",
-        "encore/laravel-admin": "^1.6",
+        "encore/laravel-admin": "^1.6.10",
         "fideloper/proxy": "~3.3",
         "gregwar/captcha": "^1.1",
         "laravel-admin-ext/summernote": "^1.0",
