@@ -14,7 +14,7 @@ class ImageRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'type' => 'required|string|in:avatar,topic',
+            'type' => 'required|string|in:avatar,realNameAuth',
         ];
 
         if ($this->type == 'avatar') {
