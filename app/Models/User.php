@@ -35,4 +35,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(ApplyRecord::class, 'user_id', $this->primaryKey);
     }
+
+    public function realNameAuth()
+    {
+        return $this->hasOne(RealNameAuth::class, 'user_id', $this->primaryKey);
+    }
 }

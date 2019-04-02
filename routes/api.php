@@ -77,5 +77,12 @@ $api->version('v1', [
         // 获取报名申请信息
         $api->get('user/positions', 'PositionsController@myApplyIndex')
             ->name('api.user.positions');
+
+        // 提交实名认证
+        $api->post('user/realNameAuths', 'RealNameAuthsController@store')
+            ->name('api.user.real_name_auths.store');
+        // 获取实名认证信息
+        $api->get('user/realNameAuth', 'RealNameAuthsController@show')
+            ->name('api.user.real_name_auth');
     });
 });

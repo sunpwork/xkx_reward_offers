@@ -15,5 +15,6 @@ Route::group([
     $router->resource('positions', 'PositionsController');
     $router->resource('apply_records', 'ApplyRecordsController');
     $router->resource('categories', 'CategoriesController');
+    $router->resource('real_name_auths', 'RealNameAuthsController');
 
 });

@@ -54,6 +54,6 @@ class UsersController extends Controller
             $attributes['avatar'] = $image->path;
         }
         $user->update($attributes);
-        return $this->response->item($user, new UserTransformer());
+        return $this->response->item($user, new UserTransformer())->setStatusCode(201);
     }
 }
