@@ -14,7 +14,7 @@ class RealNameAuth extends Model
 
     const STATUS_PENDING = 'pending';
     const STATUS_INVALID = 'invalid';
-    const STATUS_CANCELED = 'active';
+    const STATUS_ACTIVE = 'active';
 
     protected $fillable = ['name', 'phone', 'gender'];
 
