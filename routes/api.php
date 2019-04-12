@@ -84,5 +84,9 @@ $api->version('v1', [
         // 获取实名认证信息
         $api->get('user/realNameAuth', 'RealNameAuthsController@show')
             ->name('api.user.real_name_auth');
+
+        // 发布跑腿信息
+        $api->post('errands','ErrandsController@store')
+            ->name('api.errands.store');
     });
 });

@@ -15,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
     {
         \App\Models\ApplyRecord::observe(\App\Observers\ApplyRecordObserver::class);
         \App\Models\RealNameAuthImage::observe(\App\Observers\RealNameAuthImageObserver::class);
+        \App\Models\Errand::observe(\App\Observers\ErrandObserver::class);
 
         \Carbon\Carbon::setLocale('zh');
     }
