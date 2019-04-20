@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Api\ErrandRequest;
 use App\Models\Errand;
+use App\Transformers\Errand\BaseErrandTransformer;
 use function EasyWeChat\Kernel\Support\generate_sign;
 use Illuminate\Http\Request;
 
@@ -43,6 +44,18 @@ class ErrandsController extends Controller
             $errand->save();
         }
         return $this->response->noContent();
+    }
+
+    public function index(Request $request,Errand $errand)
+    {
+        $query = $errand->query();
+        $query->recent();
+        if ($status = $request->status)
+        {
+            $query->where('status',$status);
+        }
+        $errands = $query->paginate(20);
+        return $this->response->paginator($errands,new BaseErrandTransformer());
     }
 
     private function getPayParams(array $params)

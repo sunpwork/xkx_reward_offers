@@ -48,6 +48,9 @@ $api->version('v1', [
     $api->get('categories', 'CategoriesController@index')
         ->name('api.categories.index');
 
+    $api->get('errands','ErrandsController@index')
+        ->name('api.errands.index');
+
     // 需要token验证的接口
     $api->group([
         'middleware' => 'api.auth'

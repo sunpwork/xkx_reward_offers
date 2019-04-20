@@ -24,4 +24,9 @@ class Errand extends Model
         'content', 'hidden_content', 'appointment_time', 'gender_limit', 'expense',
         'location_name', 'location_address', 'location_latitude', 'location_longitude'
     ];
+
+    public function scopeRecent($query)
+    {
+        return $query->orderBy('created_at', 'desc');
+    }
 }

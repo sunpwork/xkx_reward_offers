@@ -18,8 +18,8 @@ class PositionsController extends Controller
             $query->where('category_id', $categoryId);
         }
 
-        $position = $query->paginate(20);
-        return $this->response->paginator($position, new PositionTransformer());
+        $positions = $query->paginate(20);
+        return $this->response->paginator($positions, new PositionTransformer());
     }
 
     public function show(Position $position)
