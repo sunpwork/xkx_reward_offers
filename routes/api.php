@@ -88,5 +88,9 @@ $api->version('v1', [
         // 发布跑腿信息
         $api->post('errands','ErrandsController@store')
             ->name('api.errands.store');
+
+        // 检验支付状态
+        $api->put('errands/{errand}/checkPaymentStatus','ErrandsController@checkPaymentStatus')
+            ->name('api.errands.checkPaymentStatus');
     });
 });
