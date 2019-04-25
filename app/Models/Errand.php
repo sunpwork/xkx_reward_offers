@@ -16,6 +16,16 @@ class Errand extends Model
     const STATUS_PENDING = 'pending';
     const STATUS_DONE = 'done';
 
+    const GENDER_LIMITS = [
+        'male' => ['value'=>'male','name' => '限男生'],
+        'female' => ['value'=>'female','name' => '限女生'],
+        'noLimit' => ['value'=>'noLimit','name' => '不限性别']
+    ];
+
+    const GENDER_LIMITS_MALE = 'male';
+    const GENDER_LIMITS_FEMALE = 'female';
+    const GENDER_LIMITS_NOLIMIT = 'noLimit';
+
     protected $keyType = 'varchar';
 
     public $incrementing = false;
@@ -28,5 +38,10 @@ class Errand extends Model
     public function scopeRecent($query)
     {
         return $query->orderBy('created_at', 'desc');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

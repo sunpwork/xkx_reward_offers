@@ -35,6 +35,17 @@ class ErrandsController extends Controller
         }
     }
 
+    public function pay(Errand $errand)
+    {
+        if ($errand->status != Errand::STATUS_WAITINGPAY){
+            return $this->response->errorForbidden("订单状态错误");
+        }
+        if (!$this->user()->real_name_auth)
+        {
+            return $this->response->errorForbidden("用户未完成实名认证");
+        }
+    }
+
     public function checkPaymentStatus(Errand $errand)
     {
         $payment = \EasyWeChat::payment();
@@ -55,7 +66,9 @@ class ErrandsController extends Controller
             $query->where('status',$status);
         }
         $errands = $query->paginate(20);
-        return $this->response->paginator($errands,new BaseErrandTransformer());
+        return $this->response->paginator($errands,new BaseErrandTransformer())
+            ->addMeta('statusMap',Errand::STATUSES)
+            ->addMeta('genderLimitMap',Errand::GENDER_LIMITS);
     }
 
     private function getPayParams(array $params)

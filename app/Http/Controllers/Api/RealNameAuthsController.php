@@ -10,10 +10,10 @@ use Illuminate\Http\Request;
 
 class RealNameAuthsController extends Controller
 {
-    public function store(RealNameAuthRequest $request)
+    public function store(RealNameAuthRequest $request,RealNameAuth $realNameAuth)
     {
-        $realNameAuth = $this->user()->realNameAuth;
-        if ($realNameAuth){
+        if ($this->user()->realNameAuth){
+            $realNameAuth = $this->user()->realNameAuth;
             $realNameAuth->update($request->all());
             $realNameAuth->realNameAuthImages()->delete();
         }else {

@@ -27,4 +27,17 @@ class RealNameAuth extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
+
+    public function setStatusAttribute($value)
+    {
+        if ($value == self::STATUS_ACTIVE){
+            $this->user->real_name_auth = true;
+            $this->user->save();
+        }else if($value == self::STATUS_INVALID)
+        {
+            $this->user->real_name_auth = false;
+            $this->user->save();
+        }
+        $this->attributes['status'] = $value;
+    }
 }
