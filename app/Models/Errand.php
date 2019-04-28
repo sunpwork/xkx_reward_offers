@@ -9,11 +9,13 @@ class Errand extends Model
     const STATUSES = [
         'waitingPay' => ['value' => 'waitingPay', 'name' => '待付款', 'label_class' => 'label-danger'],
         'pending' => ['value' => 'pending', 'name' => '待接单', 'label_class' => 'label-warning'],
+        'waitingService' => ['value' => 'pending', 'name' => '待完成', 'label_class' => 'label-default'],
         'done' => ['value' => 'done', 'name' => '已完成', 'label_class' => 'label-success']
     ];
 
     const STATUS_WAITINGPAY = 'waitingPay';
     const STATUS_PENDING = 'pending';
+    const STATUS_WAITINGSERVICE = 'waitingService';
     const STATUS_DONE = 'done';
 
     const GENDER_LIMITS = [
@@ -43,5 +45,10 @@ class Errand extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function operator()
+    {
+        return $this->belongsTo(User::class,'operator_id','id');
     }
 }

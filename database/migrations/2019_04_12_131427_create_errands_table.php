@@ -26,7 +26,7 @@ class CreateErrandsTable extends Migration
             $table->double('location_latitude',10,6);
             $table->double('location_longitude',10,6);
             $table->string('payment_out_trade_no');
-            $table->enum('status',['waitingPay','pending','done']);
+            $table->enum('status',['waitingPay','pending','waitingService','done']);
             $table->timestamps();
         });
     }

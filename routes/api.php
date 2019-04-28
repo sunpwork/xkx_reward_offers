@@ -92,8 +92,23 @@ $api->version('v1', [
         $api->post('errands','ErrandsController@store')
             ->name('api.errands.store');
 
+        $api->get('errands/{errand}','ErrandsController@show')
+            ->name('api.errands.show');
+
         // 检验支付状态
         $api->put('errands/{errand}/checkPaymentStatus','ErrandsController@checkPaymentStatus')
             ->name('api.errands.checkPaymentStatus');
+
+        // 支付订单
+        $api->put('errands/{errand}/pay','ErrandsController@pay')
+            ->name('api.errands.pay');
+
+        // 接单
+        $api->put('errands/{errand}/take','ErrandsController@take')
+            ->name('api.errands.take');
+
+        // 完成订单
+        $api->put('errands/{errand}/done','ErrandsController@done')
+            ->name('api.errands.take');
     });
 });

@@ -10,7 +10,7 @@ use League\Fractal\TransformerAbstract;
 
 class BaseErrandTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = ['user'];
+    protected $availableIncludes = ['user','operator'];
 
     public function transform(Errand $errand)
     {
@@ -31,5 +31,15 @@ class BaseErrandTransformer extends TransformerAbstract
     public function includeUser(Errand $errand)
     {
         return $this->item($errand->user, new UserTransformer());
+    }
+
+    public function includeOperator(Errand $errand)
+    {
+        if ($errand->operator) {
+            return $this->item($errand->operator, new UserTransformer());
+        }else
+        {
+            return null;
+        }
     }
 }

@@ -31,6 +31,16 @@ class User extends Authenticatable implements JWTSubject
         'weapp_openid', 'weixin_session_key'
     ];
 
+    const GENDERS = [
+        'male' => ['value' => 'male', 'name' => '男'],
+        'female' => ['value' => 'female', 'name' => '女'],
+        'secret' => ['value' => 'secret', 'name' => '保密']
+    ];
+
+    const GENDER_MALE = 'male';
+    const GENDER_FEMALE = 'female';
+    const GENDER_SECRET = 'secret';
+
     public function applyRecords()
     {
         return $this->hasMany(ApplyRecord::class, 'user_id', $this->primaryKey);
