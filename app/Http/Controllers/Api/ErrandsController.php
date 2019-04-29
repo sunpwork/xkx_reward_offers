@@ -30,7 +30,7 @@ class ErrandsController extends Controller
 
     public function show(Errand $errand)
     {
-        if ($this->user()->id == $errand->user->id || $this->user()->id == $errand->operator->id) {
+        if ($this->user()->id == $errand->user->id || ($errand->operator && $this->user()->id == $errand->operator->id)) {
             $response = $this->response->item($errand, new FullErrandTransformer());
         } else {
             $response = $this->response->item($errand, new BaseErrandTransformer());
@@ -63,7 +63,7 @@ class ErrandsController extends Controller
         if ($errand->status != Errand::STATUS_PENDING) {
             return $this->response->errorForbidden("订单状态错误");
         }
-        if ($this->user()->id == $errand->user->id || $this->user()->real_name_auth) {
+        if ($this->user()->id == $errand->user->id || !$this->user()->real_name_auth) {
             return $this->response->errorForbidden("用户无权执行此操作");
         }
         if ($errand->gender_limit != Errand::GENDER_LIMITS_NOLIMIT && $errand->gender_limit != $this->user()->gender) {
@@ -77,22 +77,37 @@ class ErrandsController extends Controller
 
     public function done(Errand $errand)
     {
-        if ($errand->status != Errand::STATUS_WAITINGSERVICE) {
+//        if ($errand->status != Errand::STATUS_WAITINGSERVICE) {
+//            return $this->response->errorForbidden("订单状态错误");
+//        }
+//        if ($this->user()->id != $errand->user->id) {
+//            return $this->response->errorForbidden("用户无权执行此操作");
+//        }
+//
+//        $errand->status = Errand::STATUS_DONE;
+//        $errand->save();
+        $this->transferToBalance($errand);
+        return $this->response->noContent()->setStatusCode(200);
+    }
+
+    public function cancel(Errand $errand)
+    {
+        if ($errand->status == Errand::STATUS_WAITINGSERVICE || $errand->status == Errand::STATUS_DONE || $errand->status == Errand::STATUS_CANCELED) {
             return $this->response->errorForbidden("订单状态错误");
         }
         if ($this->user()->id != $errand->user->id) {
             return $this->response->errorForbidden("用户无权执行此操作");
         }
-        $errand->status = Errand::STATUS_DONE;
+        $this->refund($errand);
+        $errand->status = Errand::STATUS_CANCELED;
         $errand->save();
         return $this->response->noContent()->setStatusCode(200);
     }
 
     public function checkPaymentStatus(Errand $errand)
     {
-        $payment = \EasyWeChat::payment();
-        $order = $payment->order->queryByOutTradeNumber($errand->payment_out_trade_no);
-        if ($order['trade_state'] == 'SUCCESS') {
+        $order = $this->queryOrder($errand);
+        if ($order && $order['trade_state'] == 'SUCCESS') {
             $errand->status = Errand::STATUS_PENDING;
             $errand->save();
         }
@@ -138,6 +153,40 @@ class ErrandsController extends Controller
             return $payParams;
         }
         return null;
+    }
+
+    private function queryOrder(Errand $errand)
+    {
+        if ($errand->payment_out_trade_no) {
+            $payment = \EasyWeChat::payment();
+            $order = $payment->order->queryByOutTradeNumber($errand->payment_out_trade_no);
+            return $order;
+        }
+        return null;
+    }
+
+    private function refund(Errand $errand)
+    {
+        $order = $this->queryOrder($errand);
+        if ($order && $order['trade_state'] == 'SUCCESS') {
+            $payment = \EasyWeChat::payment();
+            $payment->refund->byOutTradeNumber($errand->payment_out_trade_no, time() . random_int(0, 9), $order['cash_fee'], $order['cash_fee']);
+        }
+    }
+
+    private function transferToBalance(Errand $errand)
+    {
+        $payment = \EasyWeChat::payment();
+        $result = $payment->transfer->toBalance([
+            'partner_trade_no' => '1233455', // 商户订单号，需保持唯一性(只能是字母或者数字，不能包含有符号)
+            'openid' => $errand->operator->id,
+            'check_name' => 'NO_CHECK', // NO_CHECK：不校验真实姓名, FORCE_CHECK：强校验真实姓名
+//            'amount' => $errand->expense * 100, // 企业付款金额，单位为分
+            'amount' => 1,
+            'desc' => '校客行跑腿赏金', // 企业付款操作说明信息。必填
+        ]);
+        dd($result);
+        return $result;
     }
 
 }

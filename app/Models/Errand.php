@@ -10,13 +10,15 @@ class Errand extends Model
         'waitingPay' => ['value' => 'waitingPay', 'name' => '待付款', 'label_class' => 'label-danger'],
         'pending' => ['value' => 'pending', 'name' => '待接单', 'label_class' => 'label-warning'],
         'waitingService' => ['value' => 'pending', 'name' => '待完成', 'label_class' => 'label-default'],
-        'done' => ['value' => 'done', 'name' => '已完成', 'label_class' => 'label-success']
+        'done' => ['value' => 'done', 'name' => '已完成', 'label_class' => 'label-success'],
+        'canceled' => ['value' => 'canceled', 'name' => '已取消', 'label_class' => 'label-danger'],
     ];
 
     const STATUS_WAITINGPAY = 'waitingPay';
     const STATUS_PENDING = 'pending';
     const STATUS_WAITINGSERVICE = 'waitingService';
     const STATUS_DONE = 'done';
+    const STATUS_CANCELED = 'canceled';
 
     const GENDER_LIMITS = [
         'male' => ['value'=>'male','name' => '限男生'],

@@ -110,5 +110,9 @@ $api->version('v1', [
         // 完成订单
         $api->put('errands/{errand}/done','ErrandsController@done')
             ->name('api.errands.take');
+
+        // 取消订单
+        $api->put('errands/{errand}/cancel','ErrandsController@cancel')
+            ->name('api.errands.cancel');
     });
 });
