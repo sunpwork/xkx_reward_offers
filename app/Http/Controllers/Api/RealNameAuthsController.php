@@ -33,6 +33,10 @@ class RealNameAuthsController extends Controller
     public function show()
     {
         $realNameAuth = $this->user()->realNameAuth;
-        return $this->response->item($realNameAuth, new RealNameAuthTransformer())->addMeta('statusMap',RealNameAuth::STATUSES);
+        if ($realNameAuth) {
+            return $this->response->item($realNameAuth, new RealNameAuthTransformer())->addMeta('statusMap', RealNameAuth::STATUSES);
+        }else{
+            return $this->response->errorNotFound();
+        }
     }
 }

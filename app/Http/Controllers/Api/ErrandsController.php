@@ -72,22 +72,28 @@ class ErrandsController extends Controller
         $errand->operator_id = $this->user()->id;
         $errand->status = Errand::STATUS_WAITINGSERVICE;
         $errand->save();
-        return $this->response->noContent();
+        return $this->response->noContent()->setStatusCode(200);
     }
 
     public function done(Errand $errand)
     {
-//        if ($errand->status != Errand::STATUS_WAITINGSERVICE) {
-//            return $this->response->errorForbidden("订单状态错误");
-//        }
-//        if ($this->user()->id != $errand->user->id) {
-//            return $this->response->errorForbidden("用户无权执行此操作");
-//        }
-//
-//        $errand->status = Errand::STATUS_DONE;
-//        $errand->save();
-        $this->transferToBalance($errand);
-        return $this->response->noContent()->setStatusCode(200);
+        if ($errand->status != Errand::STATUS_WAITINGSERVICE) {
+            return $this->response->errorForbidden("订单状态错误");
+        }
+        if ($this->user()->id != $errand->user->id) {
+            return $this->response->errorForbidden("用户无权执行此操作");
+        }
+
+        $transferResult = $this->transferToBalance($errand);
+
+        if (isset($transferResult['partner_trade_no'])) {
+            $errand->payment_partner_trade_no = $transferResult['partner_trade_no'];
+            $errand->status = Errand::STATUS_DONE;
+            $errand->save();
+            return $this->response->noContent()->setStatusCode(200);
+        } else {
+            return $this->response->error($transferResult['err_code_des'],500);
+        }
     }
 
     public function cancel(Errand $errand)
@@ -122,6 +128,21 @@ class ErrandsController extends Controller
             $query->where('status', $status);
         }
         $errands = $query->paginate(20);
+        return $this->response->paginator($errands, new BaseErrandTransformer())
+            ->addMeta('statusMap', Errand::STATUSES)
+            ->addMeta('genderLimitMap', Errand::GENDER_LIMITS);
+    }
+
+    public function userIndex(Request $request){
+        $errands = $this->user()->userErrands()->recent()->paginate(20);
+        return $this->response->paginator($errands, new BaseErrandTransformer())
+            ->addMeta('statusMap', Errand::STATUSES)
+            ->addMeta('genderLimitMap', Errand::GENDER_LIMITS);
+    }
+
+    public function operatorIndex(Request $request){
+        $errands = $this->user()->operatorErrands()->recent()->paginate(20);
+
         return $this->response->paginator($errands, new BaseErrandTransformer())
             ->addMeta('statusMap', Errand::STATUSES)
             ->addMeta('genderLimitMap', Errand::GENDER_LIMITS);
@@ -178,14 +199,13 @@ class ErrandsController extends Controller
     {
         $payment = \EasyWeChat::payment();
         $result = $payment->transfer->toBalance([
-            'partner_trade_no' => '1233455', // 商户订单号，需保持唯一性(只能是字母或者数字，不能包含有符号)
-            'openid' => $errand->operator->id,
+            'partner_trade_no' => time() . random_int(0, 9), // 商户订单号，需保持唯一性(只能是字母或者数字，不能包含有符号)
+            'openid' => $errand->operator->weapp_openid,
             'check_name' => 'NO_CHECK', // NO_CHECK：不校验真实姓名, FORCE_CHECK：强校验真实姓名
 //            'amount' => $errand->expense * 100, // 企业付款金额，单位为分
-            'amount' => 1,
+            'amount' => 100,
             'desc' => '校客行跑腿赏金', // 企业付款操作说明信息。必填
         ]);
-        dd($result);
         return $result;
     }
 

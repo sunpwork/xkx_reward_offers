@@ -15,7 +15,7 @@ class UserTransformer extends TransformerAbstract
             'gender' => $user->gender,
             'avatar' => url($user->avatar),
             'phone' => $user->phone,
-            'real_name_auth' => (boolean)($user->realNameAuth ? true : false),
+            'real_name_auth' => $user->real_name_auth,
             'created_at' => $user->created_at->toDateTimeString(),
             'updated_at' => $user->updated_at->toDateTimeString(),
         ];

@@ -50,4 +50,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne(RealNameAuth::class, 'user_id', $this->primaryKey);
     }
+
+    public function userErrands()
+    {
+        return $this->hasMany(Errand::class, 'user_id', $this->primaryKey);
+    }
+
+    public function operatorErrands()
+    {
+        return $this->hasMany(Errand::class, 'operator_id', $this->primaryKey);
+    }
 }

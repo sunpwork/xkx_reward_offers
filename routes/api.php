@@ -50,6 +50,8 @@ $api->version('v1', [
 
     $api->get('errands','ErrandsController@index')
         ->name('api.errands.index');
+    $api->get('errands/{errand}','ErrandsController@show')
+        ->name('api.errands.show');
 
     // 需要token验证的接口
     $api->group([
@@ -92,9 +94,6 @@ $api->version('v1', [
         $api->post('errands','ErrandsController@store')
             ->name('api.errands.store');
 
-        $api->get('errands/{errand}','ErrandsController@show')
-            ->name('api.errands.show');
-
         // 检验支付状态
         $api->put('errands/{errand}/checkPaymentStatus','ErrandsController@checkPaymentStatus')
             ->name('api.errands.checkPaymentStatus');
@@ -114,5 +113,14 @@ $api->version('v1', [
         // 取消订单
         $api->put('errands/{errand}/cancel','ErrandsController@cancel')
             ->name('api.errands.cancel');
+
+        // 用户发布的
+        $api->get('user/errands/userIndex','ErrandsController@userIndex')
+            ->name('api.errands.userIndex');
+
+        // 用户接单的
+        $api->get('user/errands/operatorIndex','ErrandsController@operatorIndex')
+            ->name('api.errands.operatorIndex');
+
     });
 });
