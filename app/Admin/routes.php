@@ -16,5 +16,6 @@ Route::group([
     $router->resource('apply_records', 'ApplyRecordsController');
     $router->resource('categories', 'CategoriesController');
     $router->resource('real_name_auths', 'RealNameAuthsController');
+    $router->resource('errands', 'ErrandsController');
 
 });
